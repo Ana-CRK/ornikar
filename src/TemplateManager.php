@@ -48,21 +48,16 @@ class TemplateManager
 
         $meetingPoint = MeetingPointRepository::getInstance()->getById($lesson->meetingPointId);
 
-        $text = $this->replaceIfContains($text, '[lesson:instructor_link]', $instructorLink);
+        $text = $this->replaceIfContains($text, Lesson::PLACEHOLDERS['instructor_link'], $instructorLink);
+        $text = $this->replaceIfContains($text, Lesson::PLACEHOLDERS['instructor_name'], $instructor->firstname);
 
-        $text = $this->replaceIfContains($text, '[lesson:summary_html]', Lesson::renderHtml($lesson));
+        $text = $this->replaceIfContains($text, Lesson::PLACEHOLDERS['summary_html'], Lesson::renderHtml($lesson));
+        $text = $this->replaceIfContains($text, Lesson::PLACEHOLDERS['summary'], Lesson::renderText($lesson));
 
-        $text = $this->replaceIfContains($text, '[lesson:summary]', Lesson::renderText($lesson));
-
-        $text = $this->replaceIfContains($text, '[lesson:instructor_name]', $instructor->firstname);
-
-        $text = $this->replaceIfContains($text, '[lesson:meeting_point]', $meetingPoint->name);
-
-        $text = $this->replaceIfContains($text, '[lesson:start_date]', $lesson->start_time->format('d/m/Y'));
-
-        $text = $this->replaceIfContains($text, '[lesson:start_time]', $lesson->start_time->format('H:i'));
-
-        $text = $this->replaceIfContains($text, '[lesson:end_time]', $lesson->end_time->format('H:i'));
+        $text = $this->replaceIfContains($text, Lesson::PLACEHOLDERS['meeting_point'], $meetingPoint->name);
+        $text = $this->replaceIfContains($text, Lesson::PLACEHOLDERS['start_date'], $lesson->start_time->format('d/m/Y'));
+        $text = $this->replaceIfContains($text, Lesson::PLACEHOLDERS['start_time'], $lesson->start_time->format('H:i'));
+        $text = $this->replaceIfContains($text, Lesson::PLACEHOLDERS['end_time'], $lesson->end_time->format('H:i'));
 
         return $text;
     }

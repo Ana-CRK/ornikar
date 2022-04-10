@@ -10,6 +10,17 @@ class Lesson
     public \DateTime $start_time;
     public \DateTime $end_time;
 
+    public const PLACEHOLDERS = [
+        'end_time' => '[lesson:end_time]',
+        'instructor_link' => '[lesson:instructor_link]',
+        'instructor_name' => '[lesson:instructor_name]',
+        'meeting_point' => '[lesson:meeting_point]',
+        'start_date' => '[lesson:start_date]',
+        'start_time' => '[lesson:start_time]',
+        'summary' => '[lesson:summary]',
+        'summary_html' => '[lesson:summary_html]',
+    ];
+
     public function __construct(int $id, int $meetingPointId, int $instructorId, \DateTime $start_time, \DateTime  $end_time)
     {
         $this->id = $id;
