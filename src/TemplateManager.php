@@ -25,7 +25,7 @@ class TemplateManager
         return $replaced;
     }
 
-    private function computeText($text, array $data)
+    private function computeText($text, array $data): ?string
     {
         $APPLICATION_CONTEXT = ApplicationContext::getInstance();
 
@@ -37,7 +37,7 @@ class TemplateManager
             $usefulObject = MeetingPointRepository::getInstance()->getById($lesson->meetingPointId);
             $instructorOfLesson = InstructorRepository::getInstance()->getById($lesson->instructorId);
 
-            if(strpos($text, '[lesson:instructor_link]') !== false){
+            if($this->str_contains($text, '[lesson:instructor_link]')){
                 $text = str_replace('[instructor_link]',  'instructors/' . $instructorOfLesson->id .'-'.urlencode($instructorOfLesson->firstname), $text);
             }
 
@@ -59,21 +59,21 @@ class TemplateManager
                         $text
                     );}}
 
-            (strpos($text, '[lesson:instructor_name]') !== false) and $text = str_replace('[lesson:instructor_name]',$instructorOfLesson->firstname,$text);
+            ($this->str_contains($text, '[lesson:instructor_name]')) and $text = str_replace('[lesson:instructor_name]',$instructorOfLesson->firstname,$text);
         }
 
         if ($lesson->meetingPointId) {
-            if(strpos($text, '[lesson:meeting_point]') !== false)
+            if($this->str_contains($text, '[lesson:meeting_point]'))
                 $text = str_replace('[lesson:meeting_point]', $usefulObject->name, $text);
         }
 
-        if(strpos($text, '[lesson:start_date]') !== false)
+        if($this->str_contains($text, '[lesson:start_date]'))
             $text = str_replace('[lesson:start_date]', $lesson->start_time->format('d/m/Y'), $text);
 
-        if(strpos($text, '[lesson:start_time]') !== false)
+        if($this->str_contains($text, '[lesson:start_time]'))
             $text = str_replace('[lesson:start_time]', $lesson->start_time->format('H:i'), $text);
 
-        if(strpos($text, '[lesson:end_time]') !== false)
+        if($this->str_contains($text, '[lesson:end_time]'))
             $text = str_replace('[lesson:end_time]', $lesson->end_time->format('H:i'), $text);
 
 
@@ -88,9 +88,22 @@ class TemplateManager
          */
         $_user  = (isset($data['user'])  and ($data['user']  instanceof Learner))  ? $data['user']  : $APPLICATION_CONTEXT->getCurrentUser();
         if($_user) {
-            (strpos($text, '[user:first_name]') !== false) and $text = str_replace('[user:first_name]'       , ucfirst(strtolower($_user->firstname)), $text);
+            ($this->str_contains($text, '[user:first_name]')) and $text = str_replace('[user:first_name]'       , ucfirst(strtolower($_user->firstname)), $text);
         }
 
         return $text;
+    }
+
+    /* 
+     * PHP 8 str_contains — Determine if a string contains a given substring
+     * https://www.php.net/manual/fr/function.str-contains.php
+     */
+    private function str_contains(string $haystack, string $needle): bool
+    {
+        if (strpos($haystack, $needle) !== false) {
+            return true;    
+        } else {
+            return false;
+        }
     }
 }
